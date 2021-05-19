@@ -7,6 +7,11 @@
         <input placeholder="Endereço" type="text" class="form-control mb-3" name="endereco" value={{endereco}}>
         <input placeholder="E-mail" type="text" class="form-control mb-3" name="email" value={{email}}>
         <input placeholder="Senha" type="password" class="form-control mb-3" name="senha" value={{senha}}>
+        <!-- <select class="form-select mb-3" name="tipoUser[]" multiple>
+            <option disabled>Selecione o tipo de usuário</option>
+            <option value="S">Cliente</option>
+            <option value="S">Administrador</option>
+        </select> -->
         <div class="form-check mb-1">
             <input name="cliente" class="form-check-input" type="checkbox" value="S" id="checkcliente" checked>
             <label class="form-check-label" for="checkcliente">
@@ -21,7 +26,8 @@
         </div>
 
         <div class="mb-3 mt-3 d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary btn-sm" name="salvar"><i class="fas fa-save"></i>&nbsp;<span>Salvar</span></button>
+            <button type="submit" class="btn btn-primary btn-sm" name="salvar"><i
+                    class="fas fa-save"></i>&nbsp;<span>Salvar</span></button>
         </div>
     </form>
 </main>

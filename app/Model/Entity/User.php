@@ -68,7 +68,7 @@ class User
         return strlen($text) ? '<div class="alert ' . $class . '"> ' . $text . '</div>' : '';
     }
 
-    //Função responsável por cadastrar o usuario.
+    //Responsável por cadastrar o usuario.
     public function cadastrar()
     {
         $database = new Database('user');
@@ -87,7 +87,7 @@ class User
         return true;
     }
 
-    //Função responsável por atualizar o usuario.
+    //Responsável por atualizar o usuario.
     public function atualizar()
     {
         return (new Database('user'))->update('id =' . $this->id, [
@@ -102,16 +102,19 @@ class User
         ]);
     }
 
+    //Busca todos usuarios do banco
     public static function getUsers($where = null, $order = null, $limit = null)
     {
         return (new Database('user'))->select($where, $order, $limit)->fetchAll(PDO::FETCH_CLASS, self::class);
     }
 
+    //Valida se o usuario é administrador
     public static function isAdm()
     {
         return array_key_exists('ADM', $_SESSION) ? strtoupper($_SESSION['ADM']) === 'S' : false;
     }
 
+    //Valida se ja existe um usuário com o mesmo cpf
     public function existeUsuarioCpf()
     {
         $content = (new Database('user'))
@@ -121,6 +124,8 @@ class User
         return count($content) > 0;
     }
 
+
+    //Valida se ja existe um usuário com o mesmo e-mail
     public function existeUsuarioEmail()
     {
         $content = (new Database('user'))
@@ -130,8 +135,15 @@ class User
         return count($content) > 0;
     }
 
+    //Responsável por buscar um usuário pelo ID
     public function getUserId()
     {
         return (new Database('user'))->select('id = ' . $this->id)->fetchObject(self::class);
     }
+
+     //Responsável por excluir um usuário.
+     public function excluir()
+     {
+         return (new Database('user'))->delete('id = ' . $this->id);
+     }
 }

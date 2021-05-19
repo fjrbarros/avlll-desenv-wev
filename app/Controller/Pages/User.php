@@ -69,11 +69,6 @@ class User extends DefaultPage
     {
         $postVars = $request->getPostVars();
 
-        // echo "<pre>";
-        // print_r($postVars);
-        // echo "</pre>";
-        // exit;
-
         $user = new EntityUser();
 
         $user->id = $idUsuario;
@@ -162,5 +157,40 @@ class User extends DefaultPage
         ]);
 
         return parent::getDefaultPage('Error', $content);
+    }
+
+    public static function removeUser($request, $idUsuario)
+    {
+        if (!isset($idUsuario) || !is_numeric($idUsuario)) {
+            return self::getPageError('Id do usuário não encontrado ou inválido!');
+        }
+
+        $user = new EntityUser();
+
+        $user->id = $idUsuario;
+
+        $result =  $user->getUserId();
+
+        if (!$result instanceof EntityUser) {
+            return self::getPageError('Não existe usuário cadastrado com esse código!');
+        }
+
+        if($request->getHttpMethod() === 'GET') {
+            $content = View::render('pages/question', [
+                'content' => 'Deseja remover o usuário '.$result->nome.'?'
+            ]);
+    
+            return parent::getDefaultPage('Atenção', $content);
+        }
+
+        if($request->getHttpMethod() === 'POST') {
+            if($user->excluir()) {
+                $content = View::render('pages/success', [
+                    'content' => 'Usuário removido com sucesso!'
+                ]);
+        
+                return parent::getDefaultPage('Atenção', $content);
+            }
+        }
     }
 }

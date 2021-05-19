@@ -45,3 +45,18 @@ $router->post('/user-edit/{idUsuario}', [
         return new Response(200, Pages\User::saveUser($request, $idUsuario));
     }
 ]);
+
+//Rota valida remoção de usuarios
+$router->get('/user-remove/{idUsuario}', [
+    function ($request,$idUsuario) {
+        return new Response(200, Pages\User::removeUser($request,$idUsuario));
+    }
+]);
+
+
+//Rota remoção de usuarios
+$router->post('/user-remove/{idUsuario}', [
+    function ($request,$idUsuario) {
+        return new Response(200, Pages\User::removeUser($request,$idUsuario));
+    }
+]);
