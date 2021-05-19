@@ -49,7 +49,7 @@ class User extends DefaultPage
     {
         //View da pagina home
         $content = View::render('pages/user/form', [
-            'title' => $userData['title'] ?? '',
+            'title' => $userData['title'] ?? 'Cadastro de usuário',
             'msg-error-alert' => $userData['msg'] ?? '',
             'nome' => $userData['nome'] ?? '',
             'cpf' => $userData['cpf'] ?? '',
@@ -61,7 +61,7 @@ class User extends DefaultPage
         ]);
 
         //Retorna a view da pagina
-        return parent::getDefaultPage($userData['title'] ?? '', $content);
+        return parent::getDefaultPage($userData['title'] ?? 'Cadastro de usuário', $content);
     }
 
     //Método responável por retornar o formulario de usuarios
@@ -143,6 +143,7 @@ class User extends DefaultPage
         }
 
         return self::getForm([
+            'title' => 'Editar usuário',
             'nome' => $result->nome,
             'cpf' => $result->cpf,
             'email' => $result->email,
