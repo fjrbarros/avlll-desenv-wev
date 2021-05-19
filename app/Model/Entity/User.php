@@ -48,12 +48,14 @@ class User
             $errors .= 'Necessário informar um tipo de usuário! <br>';
         }
 
-        if ($this->existeUsuarioCpf()) {
-            $errors .= 'Já existe um usuário com esse cpf! <br>';
-        }
+        if (!$this->id) {
+            if ($this->existeUsuarioCpf()) {
+                $errors .= 'Já existe um usuário com esse cpf! <br>';
+            }
 
-        if ($this->existeUsuarioEmail()) {
-            $errors .= 'Já existe um usuário com esse email! <br>';
+            if ($this->existeUsuarioEmail()) {
+                $errors .= 'Já existe um usuário com esse email! <br>';
+            }
         }
 
         $errors = $this->getMsgFormat($errors, 'alert-danger');
@@ -66,6 +68,7 @@ class User
         return strlen($text) ? '<div class="alert ' . $class . '"> ' . $text . '</div>' : '';
     }
 
+    //Função responsável por cadastrar o usuario.
     public function cadastrar()
     {
         $database = new Database('user');
@@ -78,10 +81,25 @@ class User
             'endereco' => $this->endereco,
             'cliente' => $this->cliente,
             'administrador' => $this->administrador,
-            'data_cadastro' => $this->dataCadastro
+            'data_cadastro' => $this->data_cadastro
         ]);
 
         return true;
+    }
+
+    //Função responsável por atualizar o usuario.
+    public function atualizar()
+    {
+        return (new Database('user'))->update('id =' . $this->id, [
+            'nome' => $this->nome,
+            'cpf' => $this->cpf,
+            'email' => $this->email,
+            'senha' => $this->senha,
+            'endereco' => $this->endereco,
+            'cliente' => $this->cliente,
+            'administrador' => $this->administrador,
+            'data_cadastro' => $this->data_cadastro
+        ]);
     }
 
     public static function getUsers($where = null, $order = null, $limit = null)

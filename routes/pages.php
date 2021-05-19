@@ -28,7 +28,7 @@ $router->get('/user-register', [
 //Rota cadastro de usuarios
 $router->post('/user-register', [
     function ($request) {
-        return new Response(200, Pages\User::saveUser($request));
+        return new Response(200, Pages\User::saveUser($request, null));
     }
 ]);
 
@@ -36,5 +36,12 @@ $router->post('/user-register', [
 $router->get('/user-edit/{idUsuario}', [
     function ($idUsuario) {
         return new Response(200, Pages\User::editUser($idUsuario));
+    }
+]);
+
+//Rota edição de usuarios
+$router->post('/user-edit/{idUsuario}', [
+    function ($request, $idUsuario) {
+        return new Response(200, Pages\User::saveUser($request, $idUsuario));
     }
 ]);

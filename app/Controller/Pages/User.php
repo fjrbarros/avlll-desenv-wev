@@ -57,9 +57,7 @@ class User extends DefaultPage
             'senha' => $userData['senha'] ?? '',
             'endereco' => $userData['endereco'] ?? '',
             'cliente' => $userData['cliente'] ?? '',
-            'administrador' => $userData['administrador'] ?? '',
-            'checked' => 'checked',
-            'check-adm' => ''
+            'administrador' => $userData['administrador'] ?? ''
         ]);
 
         //Retorna a view da pagina
@@ -67,12 +65,18 @@ class User extends DefaultPage
     }
 
     //Método responável por retornar o formulario de usuarios
-    public static function saveUser($request)
+    public static function saveUser($request, $idUsuario)
     {
         $postVars = $request->getPostVars();
 
+        // echo "<pre>";
+        // print_r($postVars);
+        // echo "</pre>";
+        // exit;
+
         $user = new EntityUser();
 
+        $user->id = $idUsuario;
         $user->nome = $postVars['nome'];
         $user->cpf = $postVars['cpf'];
         $user->email = $postVars['email'];
@@ -80,17 +84,9 @@ class User extends DefaultPage
         $user->endereco = $postVars['endereco'];
         $user->cliente = array_key_exists('cliente', $postVars) ? $postVars['cliente'] : '';
         $user->administrador = array_key_exists('administrador', $postVars) ? $postVars['administrador'] : '';
-        $user->dataCadastro = date('Y-m-d H-i-s');
+        $user->data_cadastro = date('Y-m-d H-i-s');
 
         $errors = $user->validaDados();
-
-        $checkCliente = $postVars['cliente'] === 'S' ? 'checked' : '';
-
-echo "<pre>";
-print_r($checkCliente);
-echo "</pre>";
-exit;
-        $checkAdm = array_key_exists('administrador', $postVars) ? 'checked' : '';
 
         if (strlen($errors)) {
             return self::getForm([
@@ -102,16 +98,22 @@ exit;
                 'endereco' => $user->endereco,
                 'cliente' => $user->cliente,
                 'administrador' => $user->administrador,
-                'msg' => $errors,
-                'check-cliente' => '',
-                'check-adm' => ''
+                'msg' => $errors
             ]);
         }
 
-        if ($user->cadastrar()) {
-            return self::getForm([
-                'msg' => $user->getMsgFormat('Usuário cadastrado com sucesso!', 'alert-success')
-            ]);
+        if ($idUsuario) {
+            if ($user->atualizar()) {
+                return self::getForm([
+                    'msg' => $user->getMsgFormat('Usuário editado com sucesso!', 'alert-success')
+                ]);
+            }
+        } else {
+            if ($user->cadastrar()) {
+                return self::getForm([
+                    'msg' => $user->getMsgFormat('Usuário cadastrado com sucesso!', 'alert-success')
+                ]);
+            }
         }
     }
 
@@ -140,20 +142,15 @@ exit;
             return self::getPageError('Não existe usuário cadastrado com esse código!');
         }
 
-        // echo "<pre>";
-        // print_r($result);
-        // echo "</pre>";
-        // exit;
-
         return self::getForm([
-            'title' => 'Editar usuário',
             'nome' => $result->nome,
             'cpf' => $result->cpf,
             'email' => $result->email,
+            'senha' => '',
             'endereco' => $result->endereco,
             'cliente' => $result->cliente,
             'administrador' => $result->administrador,
-            'checked' => 'checked'
+            'msg' => ''
         ]);
     }
 
