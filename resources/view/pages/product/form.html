@@ -1,9 +1,9 @@
 <main>
     <form method="POST" style="max-width: 600px; margin: 0 auto;">
-        <h3 class="text-center mb-2">{{title}}</h3>
+        <h3 class="text-center mb-3">{{title}}</h3>
         {{msg-error-alert}}
         <input placeholder="Nome" class="form-control mb-3" name="nome" value="{{nome}}">
-        <input class="form-control mb-3" type="file">
+        <input class="form-control mb-3" type="file" name="file">
         <textarea rows="3" class="form-control mb-3" placeholder="Descrição" name="descricao">{{descricao}}</textarea>
         <input placeholder="Valor" type="number" class="form-control mb-3" name="valor" value="{{valor}}">
         <div class="mb-3 mt-3  d-flex justify-content-end">

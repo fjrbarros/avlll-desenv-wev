@@ -21,6 +21,7 @@ class User
     public $cliente;
     public $administrador;
     public $data_cadastro;
+    public $ativo;
 
     //Valida os dados obrigatorios para cadastro ou edição
     public function validaDados()
@@ -132,7 +133,8 @@ class User
             'endereco' => $this->endereco,
             'cliente' => $this->cliente,
             'administrador' => $this->administrador,
-            'data_cadastro' => $this->data_cadastro
+            'data_cadastro' => $this->data_cadastro,
+            'ativo' => $this->ativo
         ]);
 
         return true;
@@ -188,6 +190,6 @@ class User
     //Responsável por excluir um usuário.
     public function excluir()
     {
-        return (new Database('user'))->delete('id = ' . $this->id);
+        return (new Database('user'))->update('id =' . $this->id, ['ativo' => 'N']);
     }
 }

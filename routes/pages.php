@@ -89,9 +89,16 @@ $router->post('/logout', [
     }
 ]);
 
-//Rota para cadastro de produto
+//Rota para formulario de produto
 $router->get('/product', [
     function () {
         return new Response(200, Pages\Product::getProduct());
+    }
+]);
+
+//Rota para cadastro de produto
+$router->post('/product', [
+    function ($request) {
+        return new Response(200, Pages\Product::saveProduct($request));
     }
 ]);

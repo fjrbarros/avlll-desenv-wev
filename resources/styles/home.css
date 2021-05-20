@@ -1,0 +1,43 @@
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+}
+
+@media(max-width: 768px) {
+    .grid-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media(max-width: 600px) {
+    .grid-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 400px) {
+    .grid-cards {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.card-extra {
+    background-color: #0a1521!important;
+}
+
+.card-info {
+    padding: 10px;
+}
+
+.nome-card {
+    max-width: 245px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.produtos-nao-cadastrados {
+    text-align: center;
+}

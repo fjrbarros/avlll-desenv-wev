@@ -48,9 +48,9 @@ class User extends DefaultPage
     public static function getForm($userData = [])
     {
 
-        if (!isset($_SESSION['ADM'])) {
-            return self::getPageError('Usuário não possui permissão!');
-        }
+        // if (!isset($_SESSION['ADM'])) {
+        //     return self::getPageError('Usuário não possui permissão!');
+        // }
 
         //View da pagina home
         $content = View::render('pages/user/form', [
@@ -85,6 +85,7 @@ class User extends DefaultPage
         $user->cliente = array_key_exists('cliente', $postVars) ? $postVars['cliente'] : '';
         $user->administrador = array_key_exists('administrador', $postVars) ? $postVars['administrador'] : '';
         $user->data_cadastro = date('Y-m-d H-i-s');
+        $user->ativo = 'S';
 
         $errors = $user->validaDados();
 
