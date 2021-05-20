@@ -68,7 +68,7 @@ class Database
         $limit = strlen($limit) ? 'limit ' . $limit : '';
 
         $query = 'select ' . $fields . ' from ' . $this->table . ' ' . $where . ' ' . $order . ' ' . $limit;
-
+        
         return $this->execute($query);
     }
 

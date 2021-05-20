@@ -47,6 +47,11 @@ class User extends DefaultPage
     //Método responável por retornar o formulario de usuarios
     public static function getForm($userData = [])
     {
+
+        if (!isset($_SESSION['ADM'])) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
+
         //View da pagina home
         $content = View::render('pages/user/form', [
             'title' => $userData['title'] ?? 'Cadastro de usuário',
@@ -73,8 +78,8 @@ class User extends DefaultPage
 
         $user->id = $idUsuario;
         $user->nome = $postVars['nome'];
-        $user->cpf = $postVars['cpf'];
-        $user->email = $postVars['email'];
+        $user->cpf = trim($postVars['cpf']);
+        $user->email = trim($postVars['email']);
         $user->senha = $postVars['senha'];
         $user->endereco = $postVars['endereco'];
         $user->cliente = array_key_exists('cliente', $postVars) ? $postVars['cliente'] : '';
@@ -97,6 +102,9 @@ class User extends DefaultPage
             ]);
         }
 
+        //Criptografando a senha
+        $user->senha = password_hash($user->senha, PASSWORD_DEFAULT);
+
         if ($idUsuario) {
             if ($user->atualizar()) {
                 return self::getForm([
@@ -114,15 +122,15 @@ class User extends DefaultPage
 
     public static function getBtnCadastro()
     {
-        if (EntityUser::isAdm()) {
-            return View::render('pages/user/items/btncadastro');
-        }
-
-        return '';
+        return View::render('pages/user/items/btncadastro');
     }
 
     public static function editUser($idUsuario)
     {
+        if (!isset($_SESSION['ADM'])) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
+
         if (!isset($idUsuario) || !is_numeric($idUsuario)) {
             return self::getPageError('Id do usuário não encontrado ou inválido!');
         }
@@ -161,6 +169,10 @@ class User extends DefaultPage
 
     public static function removeUser($request, $idUsuario)
     {
+        if (!isset($_SESSION['ADM'])) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
+
         if (!isset($idUsuario) || !is_numeric($idUsuario)) {
             return self::getPageError('Id do usuário não encontrado ou inválido!');
         }
@@ -175,20 +187,22 @@ class User extends DefaultPage
             return self::getPageError('Não existe usuário cadastrado com esse código!');
         }
 
-        if($request->getHttpMethod() === 'GET') {
+        if ($request->getHttpMethod() === 'GET') {
             $content = View::render('pages/question', [
-                'content' => 'Deseja remover o usuário '.$result->nome.'?'
+                'content' => 'Deseja remover o usuário ' . $result->nome . '?',
+                'name' => 'Excluir',
+                'icon' => 'fa-trash-alt'
             ]);
-    
+
             return parent::getDefaultPage('Atenção', $content);
         }
 
-        if($request->getHttpMethod() === 'POST') {
-            if($user->excluir()) {
+        if ($request->getHttpMethod() === 'POST') {
+            if ($user->excluir()) {
                 $content = View::render('pages/success', [
                     'content' => 'Usuário removido com sucesso!'
                 ]);
-        
+
                 return parent::getDefaultPage('Atenção', $content);
             }
         }

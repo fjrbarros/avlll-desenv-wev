@@ -4,7 +4,6 @@ namespace App\Model\Entity;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
-    $_SESSION['ADM'] = 'S';
 }
 
 use \App\db\Database;
@@ -23,10 +22,10 @@ class User
     public $administrador;
     public $data_cadastro;
 
+    //Valida os dados obrigatorios para cadastro ou edição
     public function validaDados()
     {
         $errors = '';
-        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
 
         if (!strlen(trim($this->nome))) {
             $errors .= 'Nome de usuário obrigatório! <br>';
@@ -36,24 +35,20 @@ class User
             $errors .= 'Cpf inválido! <br>';
         }
 
-        if (!strlen(trim($this->email)) || !preg_match($regex, $this->email)) {
-            $errors .= 'E-mail inválido! <br>';
-        }
+        $errors .= $this->validaEmail();
 
-        if (!strlen(trim($this->senha)) || strlen(trim($this->senha)) < 6) {
-            $errors .= 'Senha deve possuir 6 ou mais caracteres! <br>';
-        }
+        $errors .= $this->validaSenha();
 
         if (empty(trim($this->cliente)) && empty(trim($this->administrador))) {
             $errors .= 'Necessário informar um tipo de usuário! <br>';
         }
 
         if (!$this->id) {
-            if ($this->existeUsuarioCpf()) {
+            if ($this->getUserCpf() instanceof $this > 0) {
                 $errors .= 'Já existe um usuário com esse cpf! <br>';
             }
 
-            if ($this->existeUsuarioEmail()) {
+            if ($this->getUserEmail() instanceof $this > 0) {
                 $errors .= 'Já existe um usuário com esse email! <br>';
             }
         }
@@ -63,6 +58,62 @@ class User
         return $errors;
     }
 
+    //Valida o email informado
+    public function validaEmail()
+    {
+        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
+
+        if (!strlen(trim($this->email)) || !preg_match($regex, $this->email)) {
+            return 'E-mail inválido! <br>';
+        }
+
+        return '';
+    }
+
+    //Valida a senha informada
+    public function validaSenha()
+    {
+        if (!strlen(trim($this->senha)) || strlen(trim($this->senha)) < 6) {
+            return 'Senha deve possuir 6 ou mais caracteres! <br>';
+        }
+
+        return '';
+    }
+
+    //Valida os dados do login
+    public function validaDadosLogin()
+    {
+        $errors = '';
+
+        $errors .= $this->validaEmail();
+        $errors .= $this->validaSenha();
+
+        $userDb = $this->getUserEmail();
+
+        if (!strlen($errors)) {
+            if (!$userDb instanceof $this) {
+                $errors .= 'Usuário não cadastrado!';
+            } else {
+                //Verifica se a senha informada é a mesma salva no banco
+                if (!password_verify($this->senha, $userDb->senha)) {
+                    $errors .= 'Senha inválida!';
+                }
+            }
+        }
+
+        $errors = $this->getMsgFormat($errors, 'alert-danger');
+
+        //Se o login deu certo, cria uma sessão com alguns dados
+        if (!strlen($errors)) {
+            $_SESSION['ADM'] = strtoupper($userDb->administrador) === 'S';
+            $_SESSION['USER_ID'] = $userDb->id;
+            $_SESSION['lOGADO'] = true;
+        }
+
+        return $errors;
+    }
+
+    //Formata a mensagem e estiliza com css
     public function getMsgFormat($text, $class)
     {
         return strlen($text) ? '<div class="alert ' . $class . '"> ' . $text . '</div>' : '';
@@ -111,28 +162,15 @@ class User
     //Valida se o usuario é administrador
     public static function isAdm()
     {
-        return array_key_exists('ADM', $_SESSION) ? strtoupper($_SESSION['ADM']) === 'S' : false;
+        return isset($_SESSION['ADM']);
     }
 
-    //Valida se ja existe um usuário com o mesmo cpf
-    public function existeUsuarioCpf()
+    //Responsável por buscar o usuario pelo cpf
+    public function getUserCpf()
     {
-        $content = (new Database('user'))
-            ->select('cpf = ' . "'$this->cpf'")
-            ->fetchAll(PDO::FETCH_CLASS, self::class);
+        $content = (new Database('user'))->select('cpf = ' . "'$this->cpf'")->fetchObject(self::class);
 
-        return count($content) > 0;
-    }
-
-
-    //Valida se ja existe um usuário com o mesmo e-mail
-    public function existeUsuarioEmail()
-    {
-        $content = (new Database('user'))
-            ->select('email = ' . "'$this->email'")
-            ->fetchAll(PDO::FETCH_CLASS, self::class);
-
-        return count($content) > 0;
+        return $content;
     }
 
     //Responsável por buscar um usuário pelo ID
@@ -141,9 +179,15 @@ class User
         return (new Database('user'))->select('id = ' . $this->id)->fetchObject(self::class);
     }
 
-     //Responsável por excluir um usuário.
-     public function excluir()
-     {
-         return (new Database('user'))->delete('id = ' . $this->id);
-     }
+    //Responsável por buscar um usuário pelo Email
+    public function getUserEmail()
+    {
+        return (new Database('user'))->select('email = ' . "'$this->email'")->fetchObject(self::class);
+    }
+
+    //Responsável por excluir um usuário.
+    public function excluir()
+    {
+        return (new Database('user'))->delete('id = ' . $this->id);
+    }
 }
