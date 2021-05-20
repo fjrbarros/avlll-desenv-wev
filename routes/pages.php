@@ -88,3 +88,10 @@ $router->post('/logout', [
         return new Response(200, Pages\Login::fazerLogout());
     }
 ]);
+
+//Rota para cadastro de produto
+$router->get('/product', [
+    function () {
+        return new Response(200, Pages\Product::getProduct());
+    }
+]);
