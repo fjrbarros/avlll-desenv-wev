@@ -14,8 +14,8 @@ CREATE TABLE `user` (
 
 -- Insert de dados iniciais
 INSERT INTO `user` (`id`, `nome`, `cpf`, `email`, `senha`, `endereco`, `cliente`, `administrador`, `data_cadastro`, `ativo`) VALUES
-(5, 'Admin', '12345678999', 'adm@adm.com', '$2y$10$igkqFXZt20W4t.RmkyoEo.hQPIAAq4zbikEyVjl7P1qngbN2b2Zni', '', 'S', 'S', '2021-05-21', 'S'),
-(6, 'Cliente', '12345612345', 'cliente@cliente.com', '$2y$10$f1iuwYDvKYbDAq4wwsEzaeam9r619DJRAiR6KHgCn9dfil.weMOmS', '', 'S', '', '2021-05-21', 'S');
+(8, 'Administrador', '12345678999', 'adm@adm.com', '$2y$10$JVJMZMN.Krw3aBV3eBcv0ubYTOoYgFrIeduy6zTfBX1YDpxDI73ge', 'IÃ§ara - SC', '', 'S', '2021-05-22', 'S'),
+(9, 'Cliente', '12345612345', 'cliente@cliente.com', '$2y$10$RyHvC3SgvBk5JlUfIjO/meqYaFoudgqZ0Eh5b5P2zdwQpUBE9v8TK', 'AraranguÃ¡ - SC', 'S', '', '2021-05-22', 'S');
 
 -- Cria os indices
 ALTER TABLE `user`
@@ -42,8 +42,10 @@ CREATE TABLE `product` (
 
 -- Insert de dados iniciais
 INSERT INTO `product` (`id`, `nome`, `arquivo`, `descricao`, `valor`, `data_cadastro`, `id_user`) VALUES
-(12, 'Produto cliente', '60a756b8de11d.png', 'dasfasfasfas', 10, '2021-05-21', 6),
-(14, 'Produto cliente 2', '60a75e598ef4f.jpg', 'sssssssssssssssss', 55, '2021-05-21', 6);
+(15, 'Demonâ€™s Souls', '60a8379599824.jpg', 'O remake de Demonâ€™s Souls, tÃ­tulo da From Software lanÃ§ado originalmente em 2009 para PlayStation 3 (PS3), Ã© um dos jogos mais aguardados do ano. ', 55, '2021-05-21', 8),
+(16, 'Marvelâ€™s Spider-Man: Miles Morales', '60a837cfd2caa.jpg', 'Com lanÃ§amento previsto tanto para PS4 como PS5, Marvelâ€™s Spider-Man: Miles Morales Ã© um jogo standalone baseado no Marvelâ€™s Spider-Man de 2018, tÃ­tulo bastante aclamado pela crÃ­tica e pelos fÃ£s. ', 120, '2021-05-21', 8),
+(17, 'Sackboy: A Big Adventure', '60a8385d32460.jpeg', 'A franquia LittleBigPlanet sempre foi conhecida por permitir a criaÃ§Ã£o de fases e mecÃ¢nicas.', 200, '2021-05-21', 9),
+(18, 'Astroâ€™s Playroom', '60a8388d3dce3.jpg', 'Por falar em mascote, com o lanÃ§amento do PS5, a Sony parece ter grandes planos para o personagem Astro: todos os jogadores terÃ£o acesso ao game Astroâ€™s Playroom, que virÃ¡ prÃ©-instalado no novo console. ', 180, '2021-05-21', 9);
 
 
 -- Cria os indices
@@ -82,15 +84,21 @@ COMMIT;
 -----------------------------------------------------------------------------------------------
 
 -- Cria tabela de pedido_produto
-ALTER TABLE `pedido_produto`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_fk_pedido` (`id_pedido`),
-  ADD KEY `id_fk_produto` (`id_produto`),
-  ADD KEY `id_fk_usuario` (`id_usuario`);
+CREATE TABLE `pedido_produto` (
+  `id` int(11) NOT NULL,
+  `id_pedido` int(11) NOT NULL,
+  `id_produto` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Configura a primary key
+-- Adiciona index
+ALTER TABLE `pedido_produto`
+  ADD PRIMARY KEY (`id`);
+
+-- Adiciona a primary key 
 ALTER TABLE `pedido_produto`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
 
 -- Configura a foreing key
 ALTER TABLE `pedido_produto`

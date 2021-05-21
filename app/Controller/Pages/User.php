@@ -14,9 +14,9 @@ class User extends DefaultPage
     //Método responável por retornar a lista de usuarios
     public static function getTable()
     {
-        // if (!EntityUser::isAdm()) {
-        //     return self::getPageError('Usuário não possui permissão!');
-        // }
+        if (!EntityUser::isAdm()) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
 
         //View da pagina home
         $content = View::render('pages/user/table', [
@@ -52,9 +52,9 @@ class User extends DefaultPage
     public static function getForm($userData = [])
     {
 
-        // if (!isset($_SESSION['ADM'])) {
-        //     return self::getPageError('Usuário não possui permissão!');
-        // }
+        if (!isset($_SESSION['ADM'])) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
 
         //View da pagina home
         $content = View::render('pages/user/form', [
@@ -132,9 +132,9 @@ class User extends DefaultPage
 
     public static function editUser($idUsuario)
     {
-        // if (!isset($_SESSION['ADM'])) {
-        //     return self::getPageError('Usuário não possui permissão!');
-        // }
+        if (!isset($_SESSION['ADM'])) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
 
         if (!isset($idUsuario) || !is_numeric($idUsuario)) {
             return self::getPageError('Id do usuário não encontrado ou inválido!');
@@ -174,9 +174,9 @@ class User extends DefaultPage
 
     public static function removeUser($request, $idUsuario)
     {
-        // if (!isset($_SESSION['ADM'])) {
-        //     return self::getPageError('Usuário não possui permissão!');
-        // }
+        if (!isset($_SESSION['ADM'])) {
+            return self::getPageError('Usuário não possui permissão!');
+        }
 
         if (!isset($idUsuario) || !is_numeric($idUsuario)) {
             return self::getPageError('Id do usuário não encontrado ou inválido!');

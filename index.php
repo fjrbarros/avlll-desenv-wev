@@ -9,8 +9,3 @@ $router = new Router(URL);
 include __DIR__ . '/routes/pages.php';
 
 $router->run()->sendResponse();
-
-// echo "<pre>";
-// print_r($query);
-// echo "</pre>";
-// exit;

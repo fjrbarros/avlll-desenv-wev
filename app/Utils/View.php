@@ -14,7 +14,6 @@ class View
         self::$vars = $vars;
     }
 
-
     //Responsavel por retornar o conteudo da view.
     private static function getContentView($view)
     {
