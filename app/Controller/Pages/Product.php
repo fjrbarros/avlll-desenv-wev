@@ -83,11 +83,6 @@ class Product extends DefaultPage
 
     public static function removeProduct($request, $idProduto)
     {
-        // echo "<pre>";
-        // print_r($idProduto);
-        // echo "</pre>";
-        // exit;
-
         if (!isset($idProduto) || !is_numeric($idProduto)) {
             return self::getPageError('Id do produto não encontrado ou inválido!');
         }
@@ -127,6 +122,7 @@ class Product extends DefaultPage
 
                 if ($request->getHttpMethod() === 'POST') {
                     if ($product->excluir()) {
+                        self::removeProductSession($product->id);
                         $content = View::render('pages/success', [
                             'content' => 'Produto removido com sucesso!'
                         ]);
@@ -138,8 +134,7 @@ class Product extends DefaultPage
                 return self::getPageError('Apenas usuário com perfil de ADMINISTRADOR pode remover esse produto!');
             }
         } else {
-
-            if (User::isAdm()) {
+           if (User::isAdm() && !User::isCliente()) {
                 return self::getPageError('Apenas usuário com perfil de CLIENTE pode remover esse produto!');
             } else {
                 if ($request->getHttpMethod() === 'GET') {
@@ -154,6 +149,7 @@ class Product extends DefaultPage
 
                 if ($request->getHttpMethod() === 'POST') {
                     if ($product->excluir()) {
+                        self::removeProductSession($product->id);
                         $content = View::render('pages/success', [
                             'content' => 'Produto removido com sucesso!'
                         ]);
@@ -165,13 +161,15 @@ class Product extends DefaultPage
         }
     }
 
+    public static function removeProductSession($idProduto)
+    {
+        if (isset($_SESSION['PRODUCT_LIST'])) {
+            unset($_SESSION['PRODUCT_LIST']['ID_PRODUCT_' . $idProduto]);
+        }
+    }
+
     public static function editProduct($request, $idProduto)
     {
-        // echo "<pre>";
-        // print_r($idProduto);
-        // echo "</pre>";
-        // exit;
-
         if (!isset($idProduto) || !is_numeric($idProduto)) {
             return self::getPageError('Id do produto não encontrado ou inválido!');
         }
@@ -193,68 +191,5 @@ class Product extends DefaultPage
             'descricao' => $product->descricao,
             'valor' => $product->valor
         ]);
-
-
-        // $user = new User();
-
-        // $user->id = $product->id_user;
-
-        // $user = $user->getUserId();
-
-        // if (!$user instanceof User) {
-        //     return self::getPageError('Erro ao recuperar usuário!');
-        // }
-
-        // if (strtoupper($user->administrador) === 'S') {
-
-        //     if (User::isAdm()) {
-        //         if ($request->getHttpMethod() === 'GET') {
-        //             $content = View::render('pages/question', [
-        //                 'content' => 'Deseja remover o produto ' . $product->nome . '?',
-        //                 'name' => 'Excluir',
-        //                 'icon' => 'fa-trash-alt'
-        //             ]);
-
-        //             return parent::getDefaultPage('Atenção', $content);
-        //         }
-
-        //         if ($request->getHttpMethod() === 'POST') {
-        //             if ($product->excluir()) {
-        //                 $content = View::render('pages/success', [
-        //                     'content' => 'Produto removido com sucesso!'
-        //                 ]);
-
-        //                 return parent::getDefaultPage('Sucesso', $content);
-        //             }
-        //         }
-        //     } else {
-        //         return self::getPageError('Apenas usuário com perfil de ADMINISTRADOR pode remover esse produto!');
-        //     }
-        // } else {
-
-        //     if (User::isAdm()) {
-        //         return self::getPageError('Apenas usuário com perfil de CLIENTE pode remover esse produto!');
-        //     } else {
-        //         if ($request->getHttpMethod() === 'GET') {
-        //             $content = View::render('pages/question', [
-        //                 'content' => 'Deseja remover o produto ' . $product->nome . '?',
-        //                 'name' => 'Excluir',
-        //                 'icon' => 'fa-trash-alt'
-        //             ]);
-
-        //             return parent::getDefaultPage('Atenção', $content);
-        //         }
-
-        //         if ($request->getHttpMethod() === 'POST') {
-        //             if ($product->excluir()) {
-        //                 $content = View::render('pages/success', [
-        //                     'content' => 'Produto removido com sucesso!'
-        //                 ]);
-
-        //                 return parent::getDefaultPage('Sucesso', $content);
-        //             }
-        //         }
-        //     }
-        // }
     }
 }

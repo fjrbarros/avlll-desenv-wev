@@ -107,6 +107,7 @@ class User
         //Se o login deu certo, cria uma sessão com alguns dados
         if (!strlen($errors)) {
             $_SESSION['ADM'] = strtoupper($userDb->administrador) === 'S';
+            $_SESSION['CLIENTE'] = strtoupper($userDb->cliente) === 'S';
             $_SESSION['USER_ID'] = $userDb->id;
             $_SESSION['lOGADO'] = true;
         }
@@ -169,6 +170,16 @@ class User
         }
 
         return $_SESSION['ADM'] == 1;
+    }
+
+    //Valida se o usuario é cliente
+    public static function isCliente()
+    {
+        if (!isset($_SESSION['CLIENTE'])) {
+            return false;
+        }
+
+        return $_SESSION['CLIENTE'] == 1;
     }
 
     //Valida se o usuario é administrador

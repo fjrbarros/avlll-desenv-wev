@@ -37,3 +37,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.item-add {
+    border: 1px solid #000cf5;
+}

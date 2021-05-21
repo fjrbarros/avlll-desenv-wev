@@ -11,6 +11,13 @@ $router->get('/', [
     }
 ]);
 
+//Rota Home
+$router->post('/', [
+    function ($request) {
+        return new Response(200, Pages\Home::addProduct($request));
+    }
+]);
+
 //Rota listagem de usuarios
 $router->get('/user-list', [
     function () {
@@ -128,5 +135,26 @@ $router->get('/product-edit/{idProduto}', [
 $router->post('/product-edit/{idProduto}', [
     function ($request, $idProduto) {
         return new Response(200, Pages\Product::saveProduct($request, $idProduto));
+    }
+]);
+
+//Rota para o carrinho
+$router->get('/cart', [
+    function () {
+        return new Response(200, Pages\Cart::getCart());
+    }
+]);
+
+//Rota para remover produto do carrinho
+$router->get('/cart-remove/{idProdutoSession}', [
+    function ($request, $idProdutoSession) {
+        return new Response(200, Pages\Cart::removeItemCart($request, $idProdutoSession));
+    }
+]);
+
+//Rota para remover produto do carrinho
+$router->post('/cart-remove/{idProdutoSession}', [
+    function ($request, $idProdutoSession) {
+        return new Response(200, Pages\Cart::removeItemCart($request, $idProdutoSession));
     }
 ]);

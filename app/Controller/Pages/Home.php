@@ -2,6 +2,10 @@
 
 namespace App\Controller\Pages;
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 use \App\Utils\View;
 use \App\Model\Entity\Product as EntityProduct;
 use \App\Model\Entity\User;
@@ -31,13 +35,21 @@ class Home extends DefaultPage
                 }
             }
 
+            $itemAdd = '';
+
+            if (isset($_SESSION['PRODUCT_LIST']['ID_PRODUCT_' . $product->id])) {
+                $itemAdd = 'item-add';
+            }
+
             $content .= View::render('pages/home/card', [
                 'nome' => $product->nome ?? '',
                 'descricao' => $product->descricao ?? '',
                 'valor' => number_format($product->valor, 2, ",", ".") ?? '',
                 'idProduct' => $product->id,
+                'qtd' => 1,
                 'dir-img' =>  $dir,
-                'actions' => self::getActions($product)
+                'actions' => self::getActions($product),
+                'item-add' =>  $itemAdd
             ]);
         }
 
@@ -47,6 +59,15 @@ class Home extends DefaultPage
 
         //Retorna a view da pagina
         return parent::getDefaultPage('Game Store', $home);
+    }
+
+    public static function addProduct($request)
+    {
+        $postVars = $request->getPostVars();
+
+        $_SESSION['PRODUCT_LIST']['ID_PRODUCT_' . $postVars['idProduct']] = ['ID_PRODUCT' => $postVars['idProduct'], 'QTDE' => $postVars['quantidade']];
+
+        return self::getHome();
     }
 
     public static function getActions($product)
