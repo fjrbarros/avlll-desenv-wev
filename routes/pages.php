@@ -141,7 +141,14 @@ $router->post('/product-edit/{idProduto}', [
 //Rota para o carrinho
 $router->get('/cart', [
     function () {
-        return new Response(200, Pages\Cart::getCart());
+        return new Response(200, Pages\Cart::getCart(null));
+    }
+]);
+
+//Rota para salvar o pedido
+$router->post('/cart', [
+    function ($request) {
+        return new Response(200, Pages\Cart::salvarPedido($request));
     }
 ]);
 

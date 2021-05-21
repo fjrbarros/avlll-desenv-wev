@@ -9,6 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
 use \App\Utils\View;
 use \App\Model\Entity\User;
 use \App\Model\Entity\Product;
+use \App\Model\Entity\Pedido;
+use \App\Model\Entity\PedidoProduto;
 
 class Cart extends DefaultPage
 {
@@ -20,6 +22,7 @@ class Cart extends DefaultPage
 
         $content = '';
         $total = 0;
+        $btnSalvar = '';
 
         if (isset($_SESSION['PRODUCT_LIST'])) {
             foreach ($_SESSION['PRODUCT_LIST'] as $sessionProduct) {
@@ -48,9 +51,14 @@ class Cart extends DefaultPage
                 'valor' => '<strong>' . $total . '</strong>',
                 'btn-remove' => ''
             ]);
+
+            $btnSalvar =  View::render('pages/cart/btnSalvarPedido', ['valor-total' => $total]);
         }
 
-        $content = View::render('pages/cart/cart', ['content' => $content]);
+        $content = View::render('pages/cart/cart', [
+            'content' => $content,
+            'btn-salvar' => $btnSalvar
+        ]);
 
         return parent::getDefaultPage('Cart', $content);
     }
@@ -92,5 +100,50 @@ class Cart extends DefaultPage
                 exit;
             }
         }
+    }
+
+    public static function salvarPedido($request)
+    {
+        $postvars = $request->getPostVars();
+
+        $pedido = new Pedido();
+
+        $pedido->valor_total = $postvars['valor-total'];
+
+        if ($pedido->cadastrar()) {
+            return self::cadastrarPedidoProduto($pedido->id);
+        } else {
+            return self::getPageError('Erro no cadastro do pedido!');
+        }
+    }
+
+    public static function cadastrarPedidoProduto($idPedido)
+    {
+        $error = '';
+
+        foreach ($_SESSION['PRODUCT_LIST'] as $sessionProduct) {
+
+            $pedidoProduto = new PedidoProduto();
+
+            $pedidoProduto->id_pedido = $idPedido;
+            $pedidoProduto->id_usuario = User::getIdUser();
+            $pedidoProduto->id_produto = $sessionProduct['ID_PRODUCT'];
+
+            if (!$pedidoProduto->cadastrar()) {
+                $error .= 'Erro ao salvar o produto da lista, ID = ' . $sessionProduct['ID_PRODUCT'];
+            }
+        }
+
+        if (strlen($error)) {
+            return self::getPageError($error);
+        }
+
+        unset($_SESSION['PRODUCT_LIST']);
+
+        $content = View::render('pages/success', [
+            'content' => 'Pedido cadastrado com sucesso!'
+        ]);
+
+        return parent::getDefaultPage('Sucesso', $content);
     }
 }

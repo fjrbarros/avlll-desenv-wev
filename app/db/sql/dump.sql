@@ -59,3 +59,42 @@ ALTER TABLE `product`
 ALTER TABLE `product`
   ADD CONSTRAINT `id_fk_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`);
 COMMIT;  
+
+-----------------------------------------------------------------------------------------------
+
+-- Cria tabela de pedido
+CREATE TABLE `pedido` (
+  `id` int(11) NOT NULL,
+  `valor_total` double NOT NULL,
+  `data` date DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Cria os indices
+ALTER TABLE `pedido`
+  ADD PRIMARY KEY (`id`);
+
+-- Configura a primary key
+ALTER TABLE `pedido`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
+
+-----------------------------------------------------------------------------------------------
+
+-- Cria tabela de pedido_produto
+ALTER TABLE `pedido_produto`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_fk_pedido` (`id_pedido`),
+  ADD KEY `id_fk_produto` (`id_produto`),
+  ADD KEY `id_fk_usuario` (`id_usuario`);
+
+-- Configura a primary key
+ALTER TABLE `pedido_produto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- Configura a foreing key
+ALTER TABLE `pedido_produto`
+  ADD CONSTRAINT `id_fk_pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id`),
+  ADD CONSTRAINT `id_fk_produto` FOREIGN KEY (`id_produto`) REFERENCES `product` (`id`),
+  ADD CONSTRAINT `id_fk_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `user` (`id`);
+COMMIT;
