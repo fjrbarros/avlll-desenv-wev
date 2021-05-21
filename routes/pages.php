@@ -99,6 +99,34 @@ $router->get('/product', [
 //Rota para cadastro de produto
 $router->post('/product', [
     function ($request) {
-        return new Response(200, Pages\Product::saveProduct($request));
+        return new Response(200, Pages\Product::saveProduct($request, null));
+    }
+]);
+
+//Rota para remover produto
+$router->get('/product-delete/{idProduto}', [
+    function ($request, $idProduto) {
+        return new Response(200, Pages\Product::removeProduct($request, $idProduto));
+    }
+]);
+
+// Rota para remover produto
+$router->post('/product-delete/{idProduto}', [
+    function ($request, $idProduto) {
+        return new Response(200, Pages\Product::removeProduct($request, $idProduto));
+    }
+]);
+
+//Rota edição de produto
+$router->get('/product-edit/{idProduto}', [
+    function ($request, $idProduto) {
+        return new Response(200, Pages\Product::editProduct($request, $idProduto));
+    }
+]);
+
+//Rota edição de produto
+$router->post('/product-edit/{idProduto}', [
+    function ($request, $idProduto) {
+        return new Response(200, Pages\Product::saveProduct($request, $idProduto));
     }
 ]);

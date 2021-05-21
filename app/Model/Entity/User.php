@@ -164,7 +164,31 @@ class User
     //Valida se o usuario é administrador
     public static function isAdm()
     {
-        return isset($_SESSION['ADM']);
+        if (!isset($_SESSION['ADM'])) {
+            return false;
+        }
+
+        return $_SESSION['ADM'] == 1;
+    }
+
+    //Valida se o usuario é administrador
+    public static function getIdUser()
+    {
+        if (!isset($_SESSION['USER_ID'])) {
+            return null;
+        }
+
+        return $_SESSION['USER_ID'];
+    }
+
+    //Valida se o usuario é administrador
+    public static function isLoged()
+    {
+        if (!isset($_SESSION['lOGADO'])) {
+            return false;
+        }
+
+        return $_SESSION['lOGADO'];
     }
 
     //Responsável por buscar o usuario pelo cpf

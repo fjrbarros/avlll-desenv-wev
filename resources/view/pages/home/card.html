@@ -1,13 +1,19 @@
 <div class="card bg-secondary card-extra">
-    <img class="card-img" src="/desenv_web/img/' . $count . '.jpg" alt="header" />
+    <img class="card-img" height="300" src="{{dir-img}}" />
     <div class="card-info text-white">
         <span class="d-block h4 nome-card">{{nome}}</span>
         <span class="d-block h6" style="height: 55px;max-height: 55px; overflow:auto;">{{descricao}}</span>
-        <span class="d-block mt-1 mb-2">{{valor}}</span>
+        <div class="d-flex justify-content-between mb-2">
+            <span class="d-block mt-1 mb-2">R$ {{valor}}</span>
+            <input type="number" placeholder="Qtde" name="quantidade" style="width: 100px;">
+        </div>
         {{actions}}
-        <button type="button" class="btn btn-outline-primary btn-sm float-end">
-            <i class=" fas fa-shopping-cart"></i>
-            <span>Adicionar</span>
-        </button>
+        <form method="POST">
+            <input type="text" name="idProduct" value="{{idProduct}}" hidden>
+            <button class="btn btn-outline-primary btn-sm float-end">
+                <i class=" fas fa-shopping-cart"></i>
+                <span>Adicionar</span>
+            </button>
+        </form>
     </div>
 </div>

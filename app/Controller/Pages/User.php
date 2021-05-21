@@ -14,6 +14,10 @@ class User extends DefaultPage
     //Método responável por retornar a lista de usuarios
     public static function getTable()
     {
+        // if (!EntityUser::isAdm()) {
+        //     return self::getPageError('Usuário não possui permissão!');
+        // }
+
         //View da pagina home
         $content = View::render('pages/user/table', [
             'button-cadastro' => self::getBtnCadastro(),
@@ -26,7 +30,7 @@ class User extends DefaultPage
 
     public static function getRowsTable()
     {
-        $users = EntityUser::getUsers();
+        $users = EntityUser::getUsers("ativo = 'S'", null, null);
 
         $content = '';
 
@@ -128,9 +132,9 @@ class User extends DefaultPage
 
     public static function editUser($idUsuario)
     {
-        if (!isset($_SESSION['ADM'])) {
-            return self::getPageError('Usuário não possui permissão!');
-        }
+        // if (!isset($_SESSION['ADM'])) {
+        //     return self::getPageError('Usuário não possui permissão!');
+        // }
 
         if (!isset($idUsuario) || !is_numeric($idUsuario)) {
             return self::getPageError('Id do usuário não encontrado ou inválido!');
@@ -170,12 +174,16 @@ class User extends DefaultPage
 
     public static function removeUser($request, $idUsuario)
     {
-        if (!isset($_SESSION['ADM'])) {
-            return self::getPageError('Usuário não possui permissão!');
-        }
+        // if (!isset($_SESSION['ADM'])) {
+        //     return self::getPageError('Usuário não possui permissão!');
+        // }
 
         if (!isset($idUsuario) || !is_numeric($idUsuario)) {
             return self::getPageError('Id do usuário não encontrado ou inválido!');
+        }
+
+        if (isset($_SESSION['USER_ID']) && $_SESSION['USER_ID'] == $idUsuario) {
+            return self::getPageError('O usuário não pode ser removido por ele mesmo!');
         }
 
         $user = new EntityUser();
@@ -195,7 +203,7 @@ class User extends DefaultPage
                 'icon' => 'fa-trash-alt'
             ]);
 
-            return parent::getDefaultPage('Atenção', $content);
+            return parent::getDefaultPage('Sucesso', $content);
         }
 
         if ($request->getHttpMethod() === 'POST') {
@@ -204,7 +212,7 @@ class User extends DefaultPage
                     'content' => 'Usuário removido com sucesso!'
                 ]);
 
-                return parent::getDefaultPage('Atenção', $content);
+                return parent::getDefaultPage('Sucesso', $content);
             }
         }
     }
